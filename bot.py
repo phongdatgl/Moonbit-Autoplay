@@ -19,6 +19,14 @@ class MoonBix():
     
     def eligibility_check(self):
         url = "https://www.binance.com/bapi/growth/v1/friendly/growth-paas/mini-app-activity/third-party/user/user-eligibility"
+        data = {
+            "resourceId":2056,
+            "orionBusinessTypeList":["TG_mini_app_01"]
+        }
+    
+    def get_task(self):
+        url = "https://www.binance.com/bapi/growth/v1/friendly/growth-paas/mini-app-activity/third-party/task/list"
+        data = {"resourceId":2056}
     
     def get_token(self):
         url = "https://www.binance.com/bapi/growth/v1/friendly/growth-paas/third-party/access/accessToken"
@@ -94,17 +102,27 @@ class MoonBix():
             return False
             
     def play(self):
+        max_game = 6
         self.get_token()
-        self.get_user_info()
-        game_remaining = self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts']
-        while game_remaining > 0:
-            print("Total Game Remaining: ", self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts'])
-            self.play_game()
-            game_remaining -= 1
-            time.sleep(2)
-        
-        print("All games completed!")
-        # self.eligibility_check()
+        self.eligibility_check()
+        while True:
+            try:
+                self.get_user_info()
+                game_remaining = self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts']
+                while game_remaining > 0:
+                    print("Total Game Remaining: ", self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts'])
+                    self.play_game()
+                    game_remaining -= 1
+                    time.sleep(2)
+                
+                print("All games completed!")
+                self.get_user_info()
+                wait_times = max_game - (self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts'])
+                total_wait = (wait_times * 600) + (self.user_info['metaInfo']['attemptRefreshCountDownTime'] / 1000)
+                
+                self.wait_playing(total_wait)
+            except KeyboardInterrupt:
+                sys.exit()
         
 if __name__ == "__main__":
     # read data from file
