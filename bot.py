@@ -56,7 +56,7 @@ class MoonBix():
                 print("Error: ", response.json()['message'])
                 
     def wait_playing(self, seconds = 0):
-        while seconds >= 0:
+        while seconds > 0:
             seconds -= 1
             print(f"Wait {seconds} s", end="\r")
             time.sleep(1)
@@ -117,8 +117,8 @@ class MoonBix():
                 
                 print("All games completed!")
                 self.get_user_info()
-                wait_times = max_game - (self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts'])
-                total_wait = (wait_times * 600) + (self.user_info['metaInfo']['attemptRefreshCountDownTime'] / 1000)
+                wait_times = max_game - (self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts']) - 1
+                total_wait = (wait_times * 600) + (self.user_info['metaInfo']['attemptRefreshCountDownTime'] / 1000) - 60
                 
                 self.wait_playing(total_wait)
             except KeyboardInterrupt:
