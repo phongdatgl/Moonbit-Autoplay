@@ -79,6 +79,7 @@ class MoonBix():
         game_metainfo = response.json()
         url = "https://vemid42929.pythonanywhere.com/api/v1/moonbix/play"
         response = requests.post(url, json=game_metainfo)
+        print(response.text)
         if response.json()['message'] != 'success':
             print("Could not get game payload!")
             return False
@@ -110,7 +111,7 @@ class MoonBix():
                 self.get_user_info()
                 game_remaining = self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts']
                 while game_remaining > 0:
-                    print("Total Game Remaining: ", self.user_info['metaInfo']['totalAttempts'] - self.user_info['metaInfo']['consumedAttempts'])
+                    print("Total Game Remaining: ", game_remaining)
                     self.play_game()
                     game_remaining -= 1
                     time.sleep(2)
